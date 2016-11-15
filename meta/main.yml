@@ -1,6 +1,6 @@
 galaxy_info:
   author: Ronald D. Kurr
-  description: MySQL server.
+  description: RabbitMQ message broker.
   company: jvmguy.com
 
   license: Apache 2
