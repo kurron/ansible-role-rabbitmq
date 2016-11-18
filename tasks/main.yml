@@ -45,7 +45,8 @@
       port: 5671-5672/tcp
       permanent: true
       state: enabled
-  when: rabbitmq_install and (ansible_distribution == "RedHat")
+  # AWS runs without the firewall enabled.  Need to figure out how to detect that.
+  when: rabbitmq_install and (ansible_distribution == "RedHat") and (ansible_virtualization_type == "FALSE")
 
 - name: Configure Firewall Rules (console)
   become: yes
@@ -54,7 +55,8 @@
       port: 15672/tcp
       permanent: true
       state: enabled
-  when: rabbitmq_install and (ansible_distribution == "RedHat")
+  # AWS runs without the firewall enabled.  Need to figure out how to detect that.
+  when: rabbitmq_install and (ansible_distribution == "RedHat") and (ansible_virtualization_type == "FALSE")
 
 - name: Start RabbitMQ
   become: yes
