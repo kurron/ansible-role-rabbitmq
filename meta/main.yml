@@ -34,7 +34,8 @@ galaxy_info:
     - xenial
 
   galaxy_tags:
-      - mysql
+      - rabbitmq
+      - amqp
 
 dependencies:
     - { role: kurron.base }

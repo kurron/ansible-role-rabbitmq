@@ -1,7 +1,7 @@
 Role Name
 =========
 
-MySQL server, initially targetted to RHEL.
+RabbitMQ server, initially targetted to RHEL.
 
 Requirements
 ------------
@@ -11,7 +11,9 @@ TODO
 Role Variables
 --------------
 
-None.
+* rabbitmq_install: true
+* rabbitmq_version: 3.6.5
+* rabbitmq_build: 3.6.5-1
 
 Dependencies
 ------------
@@ -24,7 +26,7 @@ Example Playbook
 ```
 - hosts: servers
   roles:
-      - { role: kurron.mysql }
+      - { role: kurron.rabbitmq }
 ```
 
 License
