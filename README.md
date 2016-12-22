@@ -29,6 +29,9 @@ Example Playbook
       - { role: kurron.rabbitmq }
 ```
 
+The role installs a command-line admin tool as `/usr/local/bin/rabbitmqadmin` which can be used to administer the broker.
+Use `rabbitmqadmin help` to get access to the help system.
+
 License
 -------
 

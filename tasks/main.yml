@@ -66,3 +66,17 @@
       daemon_reload: yes
       state: restarted
   when: rabbitmq_install
+
+- name: Allow RabbitMQ To Fully Start
+  become: no
+  pause:
+      minutes: 1
+  when: rabbitmq_install
+
+- name: Install RabbitMQ Admin CLI
+  become: yes
+  get_url:
+      url: "http://localhost:15672/cli/rabbitmqadmin"
+      dest: "/usr/local/bin/rabbitmqadmin"
+      mode: 0555
+  when: rabbitmq_install
