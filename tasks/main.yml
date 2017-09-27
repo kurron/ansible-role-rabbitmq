@@ -2,22 +2,22 @@
 - name: Install Erlang
   become: yes
   yum:
-      name: "erlang"
+      name: "https://www.rabbitmq.com/releases/erlang/erlang-18.1-1.el7.centos.x86_64.rpm"
       state: present
-  when: rabbitmq_install and (ansible_distribution == "RedHat")
+  when: rabbitmq_install and (ansible_distribution == "CentOS")  # now only works with centOS given the Erlang distribution-specific package
 
 - name: Install RabbitMQ Package Key
   become: yes
   rpm_key:
       key: https://www.rabbitmq.com/rabbitmq-signing-key-public.asc
-  when: rabbitmq_install and (ansible_distribution == "RedHat")
+  when: rabbitmq_install and (ansible_distribution == "RedHat" or ansible_distribution == "CentOS")
 
 - name: Install RabbitMQ
   become: yes
   yum:
-      name: "https://www.rabbitmq.com/releases/rabbitmq-server/v{{ rabbitmq_version }}/rabbitmq-server-{{ rabbitmq_build }}.noarch.rpm"
+      name: "https://www.rabbitmq.com/releases/rabbitmq-server/v{{ rabbitmq_version }}/rabbitmq-server-{{ rabbitmq_build }}.el7.noarch.rpm"
       state: present
-  when: rabbitmq_install and (ansible_distribution == "RedHat")
+  when: rabbitmq_install and (ansible_distribution == "RedHat" or ansible_distribution == "CentOS")
 
 - name: Install Custom Configuration File
   become: yes
@@ -37,6 +37,26 @@
       state: enabled
   when: rabbitmq_install
 
+- name: Fix enabled_plugins file permissions
+  become: yes
+  file:
+    path: /etc/rabbitmq
+    mode: 0555
+    recurse: yes
+
+- name: Install firewalld
+  become: yes
+  package:
+    name: firewalld
+    state: latest
+
+- name: Start firewalld
+  become: yes
+  service:
+    name: firewalld
+    enabled: yes
+    state: started
+
 - name: Configure Firewall Rules
   become: yes
 # -A INPUT -p tcp -m tcp --dport 5672  -j ACCEPT
@@ -46,7 +66,16 @@
       permanent: true
       state: enabled
   # AWS runs without the firewall enabled.  Need to figure out how to detect that.
-  when: rabbitmq_install and (ansible_distribution == "RedHat") and (ansible_virtualization_type == "FALSE")
+  when: rabbitmq_install and (ansible_distribution == "RedHat" or ansible_distribution == "CentOS") and (ansible_virtualization_type == "xen")
+
+- name: Configure Firewall Rules (Erlang)
+  become: yes
+  firewalld:
+    immediate: true
+    port: 25672/tcp
+    permanent: true
+    state: enabled
+  when: rabbitmq_install and (ansible_distribution == "RedHat" or ansible_distribution == "CentOS") and (ansible_virtualization_type == "xen")
 
 - name: Configure Firewall Rules (console)
   become: yes
@@ -56,7 +85,7 @@
       permanent: true
       state: enabled
   # AWS runs without the firewall enabled.  Need to figure out how to detect that.
-  when: rabbitmq_install and (ansible_distribution == "RedHat") and (ansible_virtualization_type == "FALSE")
+  when: rabbitmq_install and (ansible_distribution == "RedHat" or ansible_distribution == "CentOS") and (ansible_virtualization_type == "xen")
 
 - name: Start RabbitMQ
   become: yes
