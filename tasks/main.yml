@@ -16,7 +16,7 @@
   become: yes
   yum:
       name: "https://www.rabbitmq.com/releases/rabbitmq-server/v{{ rabbitmq_version }}/rabbitmq-server-{{ rabbitmq_build }}.el7.noarch.rpm"
-      state: present
+      state: latest
   when: rabbitmq_install and (ansible_distribution == "RedHat" or ansible_distribution == "CentOS")
 
 - name: Install Custom Configuration File
