@@ -15,7 +15,7 @@
 - name: Install RabbitMQ
   become: yes
   yum:
-      name: "https://www.rabbitmq.com/releases/rabbitmq-server/v{{ rabbitmq_version }}/rabbitmq-server-{{ rabbitmq_build }}.el7.noarch.rpm"
+      name: "https://www.rabbitmq.com/releases/rabbitmq-server/v{{ rabbitmq_version }}/rabbitmq-server-{{ rabbitmq_build }}.noarch.rpm"
       state: latest
   when: rabbitmq_install and (ansible_distribution == "RedHat" or ansible_distribution == "CentOS")
 
